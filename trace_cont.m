@@ -1,4 +1,4 @@
-function [ cont,  img_m, img_marked_m ] = trace_cont( img, img_marked, mid, H, lw ,ud )
+function [ contours,  img_m, img_marked_m ] = trace_cont( img, img_marked, mid, H)
 %ud = -1 (up)
 %ud = 1 (down)
 
@@ -12,65 +12,83 @@ function [ cont,  img_m, img_marked_m ] = trace_cont( img, img_marked, mid, H, l
    %         end
    %     end
     %else
+    contours=cell(0);
     img_marked_m = img_marked;
     %end
-    
+    W=size(img,2);
     img_m = img;
     
     cur=[1 mid(1)];
     
-    while cur(1)<=size(img,2) && img(cur(2),cur(1)) == 1
-        cur=[cur(1)+1 mid(cur(1))];
+    while cur(1)<=W && cur(2) == 0
+        cur(1)=cur(1)+1;
+        cur(2)=mid(cur(1));
     end
     
-    cont = zeros(2,0);
+    ex = W;
+    while mid(ex)==0
+        ex = ex -1;
+    end
     
-    d = [1 0];
     
-    while ( cur(1) <= size(img,2) )
-        ub = mid(cur(1)) - H/2;
-        lb = mid(cur(1)) + H/2;
+    while (cur(1) <= ex && mid(cur(1))>0 )
         
-        if cur(2) > ub && cur(2) < lb && img(cur(2),cur(1)) == 0
-            % add the point, and turn away from middle
-            % If x is going to negative, keep original dir
-            cont(: , size(cont,2)+1) = transpose(cur);
-            img_marked_m(cur(2),cur(1),:) = [255 0 0];
-            
-            if (ud<0)
-                d1 = turn (d, 1);
-            else
-                d1 = turn (d, -1);
-            end
-            
-            if d1(1) >= 0
-                d = d1;
-            end
-        else
-            % turn to the middle. 
-            % If x is going to out-of-bound, keep original dir
-            if (ud < 0)
-                d1 = turn (d,-1);
-            else
-                d1 = turn (d,1);
-            end
-            
-            if d1(1) >=0
-                d = d1;
-            end
-        end
-        cur = cur + d;
-        
-        if (ud<0 && cur(2) > lb || ud>0 && cur(2) < ub)
-            %the end of current contour, find next
+        % Find the start of a contour
+        while cur(1) <= ex && img(mid(cur(1)),cur(1)) == 1
             cur(1) = cur(1) + 1;
-            while (cur(1) <= size(img,2) && img(mid(cur(1)),cur(1)) == 1)
-                cur(1) = cur(1) + 1;
-            end
-            if (cur(1)<=size(img,2))
-                cur(2) = mid(cur(1));
-            end
         end
+        
+        if mid(cur(1))==0
+            break
+        end
+        
+        if (cur(1)<=ex)
+            cur(2) = mid(cur(1));
+        else
+            break
+        end
+        
+        cross_x = cur(1);  % largest crossing to x
+        cont = zeros(2,0);
+        %cont(:,1)=transpose(cur);
+        d = [1 0];
+        orig=cur;
+        d_orig = d; %[0 1];
+        %cur = cur + d;
+
+        %while ~ isequal(transpose(cur),cont(:,1)) % || ~ isequal(d,d_orig)
+        while 1
+            ub = floor(mid(cur(1)) - H/2 * 1.1);
+            lb = ceil(mid(cur(1)) + H/2 * 1.1);
+
+            if cur(2) > ub && cur(2) < lb && img(cur(2),cur(1)) == 0
+                % add the point, and turn left
+                cont(: , size(cont,2)+1) = transpose(cur);
+                if cur(2) == mid(cur(1)) && cur(1) > cross_x
+                    cross_x = cur(1);
+                end
+
+                img_marked_m(cur(2),cur(1),:) = [255 0 0];
+
+                d = turn (d, 1);
+            else
+                % turn right 
+                d = turn (d,-1);
+            end
+
+            cur = cur + d;
+            
+            if isequal(cur,orig) && isequal(d,d_orig)
+                break
+            end
+
+        end
+        
+        mid_cont_y = (mid(cont(1,1)) + mid(cross_x)) / 2;
+        contours {size(contours,2)+1} = struct('mid', mid_cont_y, 'pts', cont);
+    
+        cur(1) = cross_x + 1;
+
     end
     
 end
