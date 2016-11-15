@@ -6,11 +6,25 @@ imgf='decisive_battle_1.bmp';
 
 imgrgb=imread(imgf);
 img=im2bw(rgb2gray(imgrgb));
+%img=imread('bw-smoothed.bmp');
+
+lines=[ 25 173 980 168; 24 182 980 177; 24 191 980 187; 24 200 980 196; 25 210 981 206];
+
+theta = atan ( ( lines(1,4) - lines(1,2) ) / ( lines(1,3) - lines(1,1)) );
+img = imrotate(img, theta);
+imgrgb = imrotate(imgrgb, theta);
 img_orig=img;
+
 imwrite(img,'bw.bmp');
 
-%lines=[ 25 173 980 168; 24 182 980 177; 24 191 980 187; 24 200 980 196; 25 210 981 206];
-lines=[ 25 173 980 0; 24 182 980 0; 24 191 980 0; 24 200 980 0; 25 210 980 0];
+% load smoothed image directly
+img=im2bw(imread('bw-smoothed.bmp'));
+
+
+%lines=[ 1 171 980 171; 1 180 980 180; 1 189 980 189; 1 199 980 199; 1 208 980 208];
+lines=[ 1 273 980 273; 1 282 980 282; 1 291 980 291; 1 301 980 301; 1 310 980 310];
+
+%lines=[ 25 173 980 0; 24 182 980 0; 24 191 980 0; 24 200 980 0; 25 210 980 0];
 %lines=[24 274 980 0; 24 283 980 0; 24 292 980 0 ; 24 301 980 0; 24 310 980 0];
 midlines=zeros(4,4);
 
@@ -60,25 +74,25 @@ for i=1:2:7
     mid{i+1} = zeros(W);
     for x=1:W
         mid{i+1}(x)=round((mid{i}(x)+mid{i+2}(x))/2);
-        if (mid{i+1}(x)>0)
-            img(mid{i+1}(x),x)=0;
-        end
+        %if (mid{i+1}(x)>0)
+        %    img(mid{i+1}(x),x)=0;
+        %end
     end
 end
     
-[contours,img,imgrgb] = contoursline2(img, imgrgb ,midlines(1,1:2), midlines(1,3:4), H, lw, thn, 1);
+[contours,img,imgrgb] = contoursline2(img, imgrgb ,midlines(1,1:2), midlines(1,3:4), H, lw, thn, 1, mid{2});
 imwrite(imgrgb,'bw-2.bmp');imgrgb=imgrgb_orig;
 save_contours(1,2,height,contours,fname);
 
-[contours,img,imgrgb] = contoursline2(img, imgrgb ,midlines(2,1:2), midlines(2,3:4), H, lw, thn, 1);
+[contours,img,imgrgb] = contoursline2(img, imgrgb ,midlines(2,1:2), midlines(2,3:4), H, lw, thn, 1, mid{4});
 imwrite(imgrgb,'bw-4.bmp');imgrgb=imgrgb_orig;
 save_contours(1,4,height,contours,fname);
 
-[contours,img,imgrgb] = contoursline2(img, imgrgb ,midlines(3,1:2), midlines(3,3:4), H, lw, thn, 1);
+[contours,img,imgrgb] = contoursline2(img, imgrgb ,midlines(3,1:2), midlines(3,3:4), H, lw, thn, 1, mid{6});
 imwrite(imgrgb,'bw-6.bmp');imgrgb=imgrgb_orig;
 save_contours(1,6,height,contours,fname);
 
-[contours,img,imgrgb] = contoursline2(img, imgrgb ,midlines(4,1:2), midlines(4,3:4), H, lw, thn, 1);
+[contours,img,imgrgb] = contoursline2(img, imgrgb ,midlines(4,1:2), midlines(4,3:4), H, lw, thn, 1, mid{8});
 imwrite(imgrgb,'bw-8.bmp');imgrgb=imgrgb_orig;
 save_contours(1,8,height,contours,fname);
 
