@@ -5,7 +5,7 @@ thn=4;
 imgf='decisive_battle_1.bmp';
 
 imgrgb=imread(imgf);
-img=im2bw(rgb2gray(imgrgb));
+img=uint8(im2bw(rgb2gray(imgrgb)));
 %img=imread('bw-smoothed.bmp');
 
 lines=[ 25 173 980 168; 24 182 980 177; 24 191 980 187; 24 200 980 196; 25 210 981 206];
@@ -99,6 +99,8 @@ save_contours(1,8,height,contours,fname);
 imwrite(img,'bw-line-removed.bmp');
 
    
+%imfill(img,[1 1],8)
+
 %img=imread('line1.png');
 
 %[cont imgmarked]=trace_cont(img,12,6,6,2);

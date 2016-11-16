@@ -23,10 +23,16 @@ function [ contours, img_m, img_marked_m, mid ] = contoursline2( img, imgrgb, c0
         last_mid = c0(2);
 
         %remove the middle line and adjust mid(x)
-        err_w = lw/5; % the possible mid(x) would be mid(x-1)-err_w ~ mid(x-1)+err_w
+        err_w = H / 2; % the possible mid(x) would be mid(x-1)-err_w ~ mid(x-1)+err_w
+        
+        ue = c0(1); % the extended upper x until where last flood was attempted
+        de = c0(1);
+        
+        limit = H * 0.8;
+        
         for x=c0(1)+1:c1(1)
-
-            if x == 40
+            
+            if x == 314
                 x=x;
             end
 
@@ -69,14 +75,38 @@ function [ contours, img_m, img_marked_m, mid ] = contoursline2( img, imgrgb, c0
                 m=m+1;
             end
 
+            isline = 0;
+            
             if shortest <= lw
+                % found a possible line location
+                % filter by looking at small filles north and south
+                
+                if (x > max(ue,de))
+                    % find small fills north and south
+                    [img_m, Tu, f1, ue] = fill_flood (img_m, [x shortest_y-1], 1, 0, limit);
+                    
+                    [img_m, Td, f2, de] = fill_flood (img_m, [x shortest_y + shortest], 1, 0, limit);
+                    
+                    if f1 == 0 && f2 == 0
+                        isline = 1;
+                    else
+                        isline = 0;
+                    end
+                else
+                    isline = 1;
+                end
+            end
+            
+            if isline == 1
+                % this is a line, remove the line
                 mid(x) = round(shortest_y + shortest/2);
-                last_mid = mid(x);
+                last_mid = med_value ( mid( max(1,x-H):x));
                 for y = shortest_y:shortest_y+shortest-1
                     img_m(y,x)=1;
                 end
             else
-                mid(x)= mid(x-1);
+                % not a line
+                mid(x)= last_mid; %mid(x-1);      
             end
 
     %         img_m(mid(x),x) = 0;
