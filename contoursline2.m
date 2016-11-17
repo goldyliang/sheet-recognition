@@ -81,7 +81,7 @@ function [ contours, img_m, img_marked_m, mid ] = contoursline2( img, imgrgb, c0
                 % found a possible line location
                 % filter by looking at small filles north and south
                 
-                if (x > max(ue,de))
+                if x > max(ue,de)
                     % find small fills north and south
                     [img_m, Tu, f1, ue] = fill_flood (img_m, [x shortest_y-1], 1, 0, limit);
                     
@@ -99,7 +99,7 @@ function [ contours, img_m, img_marked_m, mid ] = contoursline2( img, imgrgb, c0
             
             if isline == 1
                 % this is a line, remove the line
-                mid(x) = round(shortest_y + shortest/2);
+                mid(x) = shortest_y + (shortest-1)/2;
                 last_mid = med_value ( mid( max(1,x-H):x));
                 for y = shortest_y:shortest_y+shortest-1
                     img_m(y,x)=1;
@@ -109,6 +109,11 @@ function [ contours, img_m, img_marked_m, mid ] = contoursline2( img, imgrgb, c0
                 mid(x)= last_mid; %mid(x-1);      
             end
 
+            if (mid(x) > 0)
+                img_marked_m (round(mid(x)),x,1) = 0;
+                img_marked_m (round(mid(x)),x,2) = 0;
+                img_marked_m (round(mid(x)),x,3) = 255;
+            end
     %         img_m(mid(x),x) = 0;
     %         y1 = mid(x);
     %         while img_m(y1,x) == 0 && mid(x) - y1 <= lw / 2
@@ -140,7 +145,7 @@ function [ contours, img_m, img_marked_m, mid ] = contoursline2( img, imgrgb, c0
 %         end
 %     end
     
-    [contours, img_m, img_marked_m] = trace_cont(img_m, img_marked_m, mid, H);
+    [contours, img_m, img_marked_m] = trace_cont(img_m, img_marked_m, mid, H ); %+ lw);
     %figure; imshow(imgrgb);
     
 

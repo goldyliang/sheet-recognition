@@ -16,21 +16,48 @@ function [img_o, T, filled, mx] = fill_flood( img, loc, b, r, limit )
     i = 1;
     T = {};
     
-    filled = 0;
+    nofill = 0;
     mx = loc(1);
     minx = loc(1);
     maxx = loc(1);
-   
+    
+  
     while (i <= size(Q,2))
         N = Q{i};
         w = N;
         e = N;
-        while ( w(1) > 1 && img( w(2), w(1) -1 ) == b )
+        while ( w(1) > 1 && N(1) - w(1) <= limit && img( w(2), w(1) -1 ) == b )
             w(1) = w(1) -1;
         end
-        while ( e(1) < size(img,2) && img (e(2), e(1) + 1) == b)
+        if w(1) <=1 || N(1) - w(1) > limit
+            nofill = 1;
+            break
+        end
+        
+        while ( e(1) <= size(img,2) && e(1) - w(1) <= limit && img (e(2), e(1) + 1) == b)
             e(1) = e(1) + 1;
         end
+        if e(1) > size(img,2) || e(1) - w(1) > limit
+            nofill = 1;
+            break
+        end
+        
+        if w(1) < minx
+            minx = w(1);
+        end
+        if e(1) > maxx
+            maxx = e(1);
+        end
+        
+        if e(1) - w(1) > limit
+            nofill = 1;
+            break;
+        end
+        
+        if (loc(2) == e(2) && e(1) > mx)
+            mx = e(1);
+        end
+        
         for x = w(1) : e(1)
             if img(N(2),x) ~= b
                 continue
@@ -40,23 +67,6 @@ function [img_o, T, filled, mx] = fill_flood( img, loc, b, r, limit )
             
             T{size(T,2) + 1} = n;
             img (n(2),n(1)) = r;
-            
-            if (loc(2) == n(2) && n(1) > mx)
-                mx = n(1);
-            end
-            
-            if (n(1) > maxx)
-                maxx = n(1);
-            end
-            if (n(1) < minx)
-                minx = n(1);
-            end
-            
-            if (maxx - minx > limit)
-                img_o = img_orig;
-                filled = 0;
-                return;
-            end
             
             if (img (n(2)-1,n(1)) == b)
                 Q{size(Q,2)+1} = [n(1),n(2)-1];
@@ -68,9 +78,13 @@ function [img_o, T, filled, mx] = fill_flood( img, loc, b, r, limit )
         i = i + 1;
     end
     
-
-    img_o = img;
-    filled = size(T,2);
+    if nofill == 1
+        img_o = img_orig;
+        filled = 0;
+    else
+        img_o = img;
+        filled = size(T,2);
+    end
 
 end
 

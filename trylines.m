@@ -18,11 +18,11 @@ img_orig=img;
 imwrite(img,'bw.bmp');
 
 % load smoothed image directly
-img=im2bw(imread('bw-smoothed.bmp'));
+%img=im2bw(imread('bw-smoothed.bmp'));
 
 
-%lines=[ 1 171 980 171; 1 180 980 180; 1 189 980 189; 1 199 980 199; 1 208 980 208];
-lines=[ 1 273 980 273; 1 282 980 282; 1 291 980 291; 1 301 980 301; 1 310 980 310];
+lines=[ 1 171 980 171; 1 180 980 180; 1 189 980 189; 1 199 980 199; 1 208 980 208];
+%lines=[ 1 273 980 273; 1 282 980 282; 1 291 980 291; 1 301 980 301; 1 310 980 310];
 
 %lines=[ 25 173 980 0; 24 182 980 0; 24 191 980 0; 24 200 980 0; 25 210 980 0];
 %lines=[24 274 980 0; 24 283 980 0; 24 292 980 0 ; 24 301 980 0; 24 310 980 0];
@@ -96,7 +96,7 @@ save_contours(1,6,height,contours,fname);
 imwrite(imgrgb,'bw-8.bmp');imgrgb=imgrgb_orig;
 save_contours(1,8,height,contours,fname);
 
-imwrite(img,'bw-line-removed.bmp');
+imwrite(logical(img),'bw-line-removed.bmp');
 
    
 %imfill(img,[1 1],8)

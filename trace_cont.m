@@ -34,7 +34,7 @@ function [ contours,  img_m, img_marked_m ] = trace_cont( img, img_marked, mid, 
     while (cur(1) <= ex && mid(cur(1))>0 )
         
         % Find the start of a contour
-        while cur(1) <= ex && img(mid(cur(1)),cur(1)) == 1
+        while cur(1) <= ex && img(round(mid(cur(1))),cur(1)) == 1
             cur(1) = cur(1) + 1;
         end
         
@@ -43,7 +43,7 @@ function [ contours,  img_m, img_marked_m ] = trace_cont( img, img_marked, mid, 
         end
         
         if (cur(1)<=ex)
-            cur(2) = mid(cur(1));
+            cur(2) = round(mid(cur(1)));
         else
             break
         end
@@ -57,14 +57,15 @@ function [ contours,  img_m, img_marked_m ] = trace_cont( img, img_marked, mid, 
         %cur = cur + d;
 
         %while ~ isequal(transpose(cur),cont(:,1)) % || ~ isequal(d,d_orig)
+        
         while 1
-            ub = floor(mid(cur(1)) - H/2 * 1.1);
-            lb = ceil(mid(cur(1)) + H/2 * 1.1);
+            ub = round(mid(cur(1)) - H/2 );
+            lb = round(mid(cur(1)) + H/2);
 
             if cur(2) > ub && cur(2) < lb && img(cur(2),cur(1)) == 0
                 % add the point, and turn left
                 cont(: , size(cont,2)+1) = transpose(cur);
-                if cur(2) == mid(cur(1)) && cur(1) > cross_x
+                if cur(2) == round(mid(cur(1))) && cur(1) > cross_x
                     cross_x = cur(1);
                 end
 
@@ -85,7 +86,7 @@ function [ contours,  img_m, img_marked_m ] = trace_cont( img, img_marked, mid, 
         end
         
         mid_cont_y = (mid(cont(1,1)) + mid(cross_x)) / 2;
-        contours {size(contours,2)+1} = struct('mid', mid_cont_y, 'pts', cont);
+        contours {size(contours,2)+1} = struct('mid', round(mid_cont_y), 'pts', cont);
     
         cur(1) = cross_x + 1;
 
