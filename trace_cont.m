@@ -38,6 +38,10 @@ function [ contours,  img_m, img_marked_m ] = trace_cont( img, img_marked, mid, 
             cur(1) = cur(1) + 1;
         end
         
+        if cur(1)> ex
+            break
+        end
+        
         if mid(cur(1))==0
             break
         end

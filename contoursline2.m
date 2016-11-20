@@ -1,4 +1,4 @@
-function [ contours, img_m, img_marked_m, mid ] = contoursline2( img, imgrgb, c0, c1, H, lw, thn, blank, mid )
+function [ contours, img_m, img_marked_m, mid ] = contoursline2( img, imgrgb, c0, c1, H, lw, blank, mid )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 

@@ -1,3 +1,4 @@
+function [o] = trace_notes (f, line_ys)
 
 lw = 3;
 H=10;
@@ -114,3 +115,5 @@ imwrite(logical(img),'bw-line-removed.bmp');
 %contoursline2('line3.png',[10,7],[970,7],lw,fn,4,0)
 %contoursline2('line4.png',[11,7],[970,7],lw,fn,4,0)
 %contoursline2('line5.png',[1,7],[970,7],lw,fn,4,0)
+
+end
