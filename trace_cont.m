@@ -1,4 +1,4 @@
-function [ contours,  img_m, img_marked_m ] = trace_cont( img, img_marked, mid, H)
+function [ contours,  img_m, img_marked_m ] = trace_cont( img, img_marked, mid, H, asblack)
 %ud = -1 (up)
 %ud = 1 (down)
 
@@ -34,7 +34,7 @@ function [ contours,  img_m, img_marked_m ] = trace_cont( img, img_marked, mid, 
     while (cur(1) <= ex && mid(cur(1))>0 )
         
         % Find the start of a contour
-        while cur(1) <= ex && img(round(mid(cur(1))),cur(1)) == 1
+        while cur(1) <= ex && ~ ismember(img(round(mid(cur(1))),cur(1)), asblack)
             cur(1) = cur(1) + 1;
         end
         
@@ -61,12 +61,14 @@ function [ contours,  img_m, img_marked_m ] = trace_cont( img, img_marked, mid, 
         %cur = cur + d;
 
         %while ~ isequal(transpose(cur),cont(:,1)) % || ~ isequal(d,d_orig)
+        ub = round(mid(cur(1)) - H/2 );
+        lb = round(mid(cur(1)) + H/2);
         
         while 1
-            ub = round(mid(cur(1)) - H/2 );
-            lb = round(mid(cur(1)) + H/2);
+            %ub = round(mid(cur(1)) - H/2 );
+            %lb = round(mid(cur(1)) + H/2);
 
-            if cur(2) > ub && cur(2) < lb && img(cur(2),cur(1)) == 0
+            if cur(2) > ub && cur(2) < lb && ismember(img(cur(2),cur(1)), asblack)
                 % add the point, and turn left
                 cont(: , size(cont,2)+1) = transpose(cur);
                 if cur(2) == round(mid(cur(1))) && cur(1) > cross_x

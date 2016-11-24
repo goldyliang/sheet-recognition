@@ -1,4 +1,4 @@
-function [ m ] = mark_group_notes( imgrgbf, imgrgbfout, contours, outf )
+function [] = mark_group_notes( imgrgbf, imgrgbfout, contours, outf )
 
     oo = dlmread(outf);
     

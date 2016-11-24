@@ -1,0 +1,58 @@
+function [img_o, T, filled] = fill_flood( img, loc, b, r, limit )
+%UNTITLED3 Summary of this function goes here
+%   Detailed explanation goes here
+
+    img_orig = img;
+    
+    if img ( loc(1), loc(2) ) ~= b
+        return
+    end
+    
+    Q = {loc};
+    i = 1;
+    T = {};
+    
+    filled = 0;
+   
+    while (i <= size(Q,2))
+        N = Q{i};
+        w = N;
+        e = N;
+        while ( w(1) > 1 && img( w(1) -1, w(2) ) == b )
+            w(1) = w(1) -1;
+        end
+        while ( e(1) < size(img,1) && img (e(1) + 1, e(2) ) == b)
+            e(1) = e(1) + 1;
+        end
+        for x = w(1) : e(1)
+            if img(x,N(2)) ~= b
+                continue
+            end
+            
+            n = [x , N(2)];
+            
+            T{size(T,2) + 1} = n;
+            img (n(1),n(2)) = r;
+            
+            if (size(T,2) > limit)
+                img_o = img_orig;
+                filled = 0;
+                return;
+            end
+            
+            if (img (n(1),n(2)-1) == b)
+                Q{size(Q,2)+1} = [n(1),n(2)-1];
+            end
+            if (img (n(1),n(2)+1) == b)
+                Q{size(Q,2)+1} = [n(1),n(2)+1];
+            end
+        end
+        i = i + 1;
+    end
+    
+
+    img_o = img;
+    filled = size(T,2);
+
+end
+

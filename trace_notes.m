@@ -1,9 +1,15 @@
-function [contours] = trace_notes (imgf, line_ys, outf, lw)
+function [contours] = trace_notes (imgf, fprefix, line_ys, outf, lw)
 
 %thn=4;
 
-imgrgb=imread(imgf);
-img=uint8(im2bw(rgb2gray(imgrgb)));
+%imgrgb=imread(imgf);
+img=uint8(imread(imgf));
+imgrgb=zeros(size(img,1),size(img,2),3);
+imgrgb(:,:,1) = img;
+imgrgb(:,:,2) = img;
+imgrgb(:,:,3) = img;
+
+%uint8(im2bw(rgb2gray(imgrgb)));
 %img=imread('bw-smoothed.bmp');
 
 %lines=[ 25 173 980 168; 24 182 980 177; 24 191 980 187; 24 200 980 196; 25 210 981 206];
@@ -51,28 +57,28 @@ fname=outf;
 f=fopen(fname,'w');
 fclose(f);
 
-height=10;
+height=H;
 mid=cell(9);
 contours={};
 
 [contours{1},img,imgrgb,mid{1}] = contoursline2(img, imgrgb ,lines(1,1:2), lines(1,3:4), H, lw, 0);
-imwrite(imgrgb,'bw-1.bmp');imgrgb=imgrgb_orig;
+imwrite(imgrgb,strcat(fprefix,'1.bmp'));imgrgb=imgrgb_orig;
 save_contours(1,1,height,contours{1},fname);
 
 [contours{3},img,imgrgb,mid{3}] = contoursline2(img, imgrgb ,lines(2,1:2), lines(2,3:4), H, lw, 0);
-imwrite(imgrgb,'bw-3.bmp');imgrgb=imgrgb_orig;
+imwrite(imgrgb,strcat(fprefix,'3.bmp'));imgrgb=imgrgb_orig;
 save_contours(1,3,height,contours{3},fname);
 
 [contours{5},img,imgrgb,mid{5}] = contoursline2(img, imgrgb ,lines(3,1:2), lines(3,3:4), H, lw, 0);
-imwrite(imgrgb,'bw-5.bmp');imgrgb=imgrgb_orig;
+imwrite(imgrgb,strcat(fprefix,'5.bmp'));imgrgb=imgrgb_orig;
 save_contours(1,5,height,contours{5},fname);
 
 [contours{7},img,imgrgb,mid{7}] = contoursline2(img, imgrgb ,lines(4,1:2), lines(4,3:4), H, lw, 0);
-imwrite(imgrgb,'bw-7.bmp');imgrgb=imgrgb_orig;
+imwrite(imgrgb,strcat(fprefix,'7.bmp'));imgrgb=imgrgb_orig;
 save_contours(1,7,height,contours{7},fname);
 
 [contours{9},img,imgrgb,mid{9}] = contoursline2(img, imgrgb ,lines(5,1:2), lines(5,3:4), H, lw, 0);
-imwrite(imgrgb,'bw-9.bmp');imgrgb=imgrgb_orig;
+imwrite(imgrgb,strcat(fprefix,'9.bmp'));imgrgb=imgrgb_orig;
 save_contours(1,9,height,contours{9},fname);
 
 W=size(img,2);
@@ -88,22 +94,22 @@ for i=1:2:7
 end
     
 [contours{2},img,imgrgb] = contoursline2(img, imgrgb ,midlines(1,1:2), midlines(1,3:4), H, lw, 1, mid{2});
-imwrite(imgrgb,'bw-2.bmp');imgrgb=imgrgb_orig;
+imwrite(imgrgb,strcat(fprefix,'2.bmp'));imgrgb=imgrgb_orig;
 save_contours(1,2,height,contours{2},fname);
 
 [contours{4},img,imgrgb] = contoursline2(img, imgrgb ,midlines(2,1:2), midlines(2,3:4), H, lw, 1, mid{4});
-imwrite(imgrgb,'bw-4.bmp');imgrgb=imgrgb_orig;
+imwrite(imgrgb,strcat(fprefix,'4.bmp'));imgrgb=imgrgb_orig;
 save_contours(1,4,height,contours{4},fname);
 
 [contours{6},img,imgrgb] = contoursline2(img, imgrgb ,midlines(3,1:2), midlines(3,3:4), H, lw, 1, mid{6});
-imwrite(imgrgb,'bw-6.bmp');imgrgb=imgrgb_orig;
+imwrite(imgrgb,strcat(fprefix,'6.bmp'));imgrgb=imgrgb_orig;
 save_contours(1,6,height,contours{6},fname);
 
 [contours{8},img,imgrgb] = contoursline2(img, imgrgb ,midlines(4,1:2), midlines(4,3:4), H, lw, 1, mid{8});
-imwrite(imgrgb,'bw-8.bmp');imgrgb=imgrgb_orig;
+imwrite(imgrgb,strcat(fprefix,'8.bmp'));imgrgb=imgrgb_orig;
 save_contours(1,8,height,contours{8},fname);
 
-imwrite(logical(img),'bw-line-removed.bmp');
+imwrite(logical(img),strcat(fprefix,'line-removed.bmp'));
 
    
 %imfill(img,[1 1],8)

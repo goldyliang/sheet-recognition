@@ -1,0 +1,34 @@
+function [] = generate_mask( contours, notef, H )
+
+    notes = dlmread(notef);
+    
+    ln = 1;
+    
+    W = round(H * 1.3);
+    if mod(W,2) == 0
+        W=W+1;
+    end
+    
+    cont_hist = zeros (W,W);
+    m = (W-1)/2;
+        
+    for i = 1 : 2: 9
+        conts = contours{i};
+        
+        for j = 1:size(conts,2)
+            con = conts{j};
+            if notes(ln,5) == 1
+                % This contour is marked as note
+                contc = centered_cont (con.pts);
+                dx = (size(contc,2) - 1) / 2;
+                dy = (size(contc,1) - 1) / 2;
+                cont_hist ( m - dy: m + dy, m - dx: m + dx) = cont_hist ( m - dy: m + dy, m - dx: m + dx) + contc;
+            end
+            ln = ln + 1;
+        end
+    end
+    
+    cont_hist
+
+end
+
