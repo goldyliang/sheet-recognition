@@ -81,6 +81,11 @@ save_contours(1,7,height,contours{7},fname);
 imwrite(imgrgb,strcat(fprefix,'9.bmp'));imgrgb=imgrgb_orig;
 save_contours(1,9,height,contours{9},fname);
 
+%imwrite(imgrgb,strcat(fprefix,'13579.bmp'));
+
+imgrgb=imgrgb_orig;
+
+
 W=size(img,2);
 
 for i=1:2:7

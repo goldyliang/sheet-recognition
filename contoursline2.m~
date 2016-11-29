@@ -45,7 +45,7 @@ function [ contours, img_m, img_marked_m, mid ] = contoursline2( img, imgrgb, c0
             %find the shortest continous black with (x, m0-m1)
 
             m=m0;
-            shortest=100000;
+            nearest=100000;
             while (m<=m1)
                 %find next white
                 while m<=m1 && img_m(m,x) == 0
