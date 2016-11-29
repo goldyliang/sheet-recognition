@@ -23,15 +23,21 @@ function [ contours, img_m, img_marked_m, mid ] = contoursline2( img, imgrgb, c0
         last_mid = c0(2);
 
         %remove the middle line and adjust mid(x)
-        err_w = H / 2; % the possible mid(x) would be mid(x-1)-err_w ~ mid(x-1)+err_w
+        err_w = lw; %H / 2; % the possible mid(x) would be mid(x-1)-err_w ~ mid(x-1)+err_w
         
-        ue = c0(1); % the extended upper x until where last flood was attempted
-        de = c0(1);
+        %ue = c0(1); % the extended upper x until where last flood was attempted
+        %de = c0(1);
+        ue = W; % disable hole filling
+        de = W;
         
         uf = 0; % if 1, then the uppder part is a small hole until ue
         df = 0; % if 1, then the down part is a small hole until ue
                 
-        limit = H * 0.65;
+        limit = H * 0.8;
+        
+        minLen = round(H * 0.8);
+        
+        running = zeros(0, 3); % x, y1, y2
         
         for x=c0(1)+1:c1(1)
             
@@ -98,17 +104,39 @@ function [ contours, img_m, img_marked_m, mid ] = contoursline2( img, imgrgb, c0
                     tomark = 2;
                 end
                 
-                % this is a line remove it
                 mid(x) = shortest_y + (shortest-1)/2;
                 last_mid = med_value ( mid( max(1,x-H):x));
-                for y = shortest_y:shortest_y+shortest-1
-                    img_m(y,x)=tomark;
-                end
+                
+                % store the running line first
+                nn = size(running,1) + 1;
+                running(nn,:) = [x shortest_y shortest_y+shortest-1];
+%                 this is a line remove it
+
+%                 for y = shortest_y:shortest_y+shortest-1
+%                     img_m(y,x)=tomark;
+%                 end
                 
 
             else
                 % not a line
                 mid(x) = last_mid;
+                
+                % Remove the last running line if it is long enough
+                if size(running,1) > minLen
+                    tomark = 1;
+                else
+                    tomark = 2;
+                end
+                
+                for i = 1 : size(running,1)
+                    xx = running(i,1);
+                    for y = running(i,2):running(i,3)
+                        img_m( y, xx) = tomark;
+                    end
+                end
+                
+                % Clear the running line
+                running = zeros(0,3);
             end
             
 

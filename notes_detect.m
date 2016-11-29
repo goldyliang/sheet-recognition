@@ -24,8 +24,8 @@ function [ output_args ] = notes_detect( imgrgbf, imgrgbfout )
     
     mask1 = dlmread('mask1.txt');
     mask2 = dlmread('mask2.txt');
-    th_matched = 30;
-    th_missed = 5;
+    th_matched = 25;
+    th_missed = 10;
     th1_binary = (max(mask1(:)) + min(mask1(:)))/2;
     th2_binary = (max(mask2(:)) + min(mask2(:)))/2;
     
