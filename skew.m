@@ -1,4 +1,4 @@
-function [ bw,projection ] = skew( path )
+function [ bw,projection ] = skew( path, range)
 %read image
 image = imread(path);
 width = size(image,2);
@@ -18,7 +18,7 @@ max_std = 0;
 
 % skew detection, default angle from -5 to 5
 % with precision of 0.01
-for angle = -30:0.1:30
+for angle = range(1):0.1:range(2)
 to_test_img = imrotate(bw,angle,'crop');
 
 % calculate the projection by line
